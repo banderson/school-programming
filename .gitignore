@@ -1,5 +1,8 @@
 bin/
 .DS_Store
 *~
-*.classpath
-*.project
+
+# Eclipse generated files and dirs
+.classpath
+.project
+.settings/
