@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import javax.swing.JApplet;
 
+// optional graphics supplement at end of chapter
 public class HappyFace extends JApplet {
 
 	public void paint(Graphics canvas) {
