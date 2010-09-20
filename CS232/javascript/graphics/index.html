@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<title>index</title>
+	<style type="text/css" media="screen">
+		canvas { border: 1px solid black; }  
+	</style>
+</head>
+
+<body>
+
+	<canvas id="my-canvas" width="200" height"200"></canvas>
+
+	<script type="text/javascript" charset="utf-8">
+		function draw () {
+			var c = document.getElementById("my-canvas");
+			ctx = c.getContext("2d");
+			if (ctx) {
+				ctx.fillStyle = "rgb(200,0,0)";
+				ctx.fillRect (10, 10, 55, 50);
+			
+				ctx.fillStyle = "rgba(0, 0, 200, 0.4)";  
+				ctx.fillRect (30, 30, 55, 50);
+			}
+		}
+		
+		function draw2 () {
+			var canvas = document.getElementById('my-canvas');  
+			if (canvas.getContext){  
+				var ctx = canvas.getContext('2d');  
+				
+				ctx.fillRect(25,25,100,100);  
+				ctx.clearRect(45,45,60,60);  
+				ctx.strokeRect(50,50,50,50);  
+			}
+		}
+		
+		function draw3 () {
+			var canvas = document.getElementById('my-canvas');  
+			canvas.width = 400;
+			canvas.height = 400;
+			if (canvas.getContext){  
+				var ctx = canvas.getContext('2d');  
+				
+				// ctx.beginPath();  
+				// 				ctx.arc(75,75,50,0,Math.PI*2,true); // Outer circle 
+				// 				ctx.moveTo(110,75);  
+				// 				ctx.arc(75,75,35,0,Math.PI,false);   // Mouth (clockwise)  
+				// 				ctx.moveTo(65,65);
+				// 				ctx.arc(60,65,5,0,Math.PI*2,true);  // Left eye  
+				// 				ctx.moveTo(95,65);  
+				// 				ctx.arc(90,65,5,0,Math.PI*2,true);  // Right eye  
+				// 				ctx.stroke();
+				
+				// taken from java
+				//drawOval(x, y, width, height)
+				ctx.beginPath(); 
+				drawCircle(ctx, 200, 200, 250);
+				ctx.stroke();
+				return;
+				canvas.setColor(Color.yellow);
+				canvas.fillOval(100, 50, 200, 200);
+
+				canvas.setColor(Color.black);
+				canvas.fillOval(155, 100, 10, 20);
+				canvas.fillOval(230, 100, 10, 20);
+
+				canvas.setColor(Color.red);
+
+				canvas.drawArc(150, 160, 100, 50, 180, 180);
+			}
+		}
+		
+		function degreesToRadians (degrees) {
+			return (Math.PI/180)*degrees;
+		}
+		
+		function drawCircle (context, x, y, width) {
+			context.arc(x, y, width/2, Math.PI*2, false);
+		}
+		
+		draw3();
+	</script>
+</body>
+</html>
