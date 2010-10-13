@@ -1,15 +1,18 @@
 X Game can be created
+* User is prompted to enter a word
+X Spaces aren't characters in secret word
+* Game continually asks for letters until max is reached or word is discovered
+* Game reprints after each guess 
 * Game can be quit in the middle
+X Game keeps track of correct guesses
+X Game keeps track of incorrect guesses
 X Allow entry of hidden word
 X Bad guess decreases remaining guesses
 X Right guess doesn't decrease remaining guesses
-* Right guess updates displayable word to show correct letter(s)
-* When last correct letter is guessed, the game should be over
-* If guesses are exceeded without solving, game should be over but not successful 
-* If all characters have been found, isFound should return true
-* Spaces aren't characters in secret word
-
-* Game status can be printed
+X Right guess updates displayable word to show correct letter(s)
+X When last correct letter is guessed, the game should be over
+X If guesses are exceeded without solving, game should be over but not successful 
+X If all characters have been found, isFound should return true
 
 * Can't make any guesses until the word is set
 

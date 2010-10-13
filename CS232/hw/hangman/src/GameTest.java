@@ -13,6 +13,19 @@ public class GameTest {
 	
 	@Test public void canCreateHangman() {
 		assertNotNull(hangman);
+	} 
+	
+	@Test public void canSetWord() {
+		String word = "secret";
+		hangman.setWord(word);
+		assertEquals(word, hangman.getHiddenString());
+	}
+	
+	@Test public void spacesDontCount() {
+		String word = "just a test";
+		hangman.setWord(word);
+		assertEquals(word, hangman.getHiddenString());	// sanity check
+		assertEquals("---- - ----", hangman.getDisplayableWord());
 	}
 	
 	@Test public void numberOfGuessesIs7() {
@@ -27,7 +40,20 @@ public class GameTest {
 		assertEquals(6, hangman.guessesRemaining());
 		hangman.MakeGuess('z');
 		assertEquals(5, hangman.guessesRemaining());
-	} 
+	}
+	
+	@Test public void repeatedCharactersCountAsBadBuess() {
+		hangman.setWord("word test");
+		assertEquals(7, hangman.guessesRemaining());
+		hangman.MakeGuess('a');	// decrements
+		assertEquals(6, hangman.guessesRemaining());
+		hangman.MakeGuess('a');	// decrements
+		assertEquals(5, hangman.guessesRemaining());
+		hangman.MakeGuess('w');	// doesn't decrement
+		assertEquals(5, hangman.guessesRemaining());
+		hangman.MakeGuess('w');	// decrements (dupe)
+		assertEquals(4, hangman.guessesRemaining());
+	}
 	
 	@Test public void rightGuessDoesNotDecrementRemainingGuesses() {
 		hangman.setWord("word test");
@@ -37,12 +63,6 @@ public class GameTest {
 		assertEquals(7, hangman.guessesRemaining());
 		hangman.MakeGuess('o');
 		assertEquals(7, hangman.guessesRemaining());
-	} 
-	
-	@Test public void canSetWord() {
-		String word = "secret";
-		hangman.setWord(word);
-		assertEquals(word, hangman.getHiddenString());
 	}
 	
 	@Test public void displayableWordStartsBlank() {
@@ -51,7 +71,7 @@ public class GameTest {
 	
 	@Test public void displayableWordUpdatesWhenSecretWordIsInitialized() {
 		hangman.setWord("test word");
-		assertEquals("---------", hangman.getDisplayableWord());
+		assertEquals("---- ----", hangman.getDisplayableWord());
 	}
 	
 	@Test public void displayableWordUpdatesOnRightGuess() {
@@ -62,5 +82,64 @@ public class GameTest {
 		assertEquals("t--t--g", hangman.getDisplayableWord());
 		hangman.MakeGuess('e');
 		assertEquals("te-t--g", hangman.getDisplayableWord());
+	}
+
+	@Test public void displayableWordRemainsOnBadGuess() {
+		hangman.setWord("testing");
+		hangman.MakeGuess('z');
+		assertEquals("-------", hangman.getDisplayableWord());
+		hangman.MakeGuess('q');
+		assertEquals("-------", hangman.getDisplayableWord());
+		hangman.MakeGuess('f');
+		assertEquals("-------", hangman.getDisplayableWord());
+	}
+	
+	@Test public void gameIsOverWhenWordIsDiscovered() {
+		hangman.setWord("aabb");
+		assertFalse(hangman.isFound());
+		hangman.MakeGuess('a');
+		assertFalse(hangman.isFound());
+		hangman.MakeGuess('b');
+		assertTrue(hangman.isFound());
+		assertFalse(hangman.isActive);
+	}
+	
+	// TODO refactor this and prev method
+	@Test public void gameIsOverWhenMaxGuessesExceeded() {
+		assertTrue(hangman.isActive);
+		hangman.setWord("aabb");
+		assertTrue(hangman.isActive);
+		hangman.MakeGuess('a');	// doesn't count against guesses since it's right
+		hangman.MakeGuess('a');	// the rest of these decrement
+		hangman.MakeGuess('a');
+		hangman.MakeGuess('a');
+		assertTrue(hangman.isActive);
+		hangman.MakeGuess('a');
+		hangman.MakeGuess('a');
+		assertTrue(hangman.isActive);
+		hangman.MakeGuess('a');
+		assertTrue(hangman.isActive);
+		hangman.MakeGuess('a');
+		assertFalse(hangman.isActive);
+	}
+	
+	// TODO refactor this and prev 2 method
+	@Test public void gameIsOverWithMatchWhenWordGuesedOnLastGuess() {
+		assertTrue(hangman.isActive);
+		hangman.setWord("aabb");
+		assertTrue(hangman.isActive);
+		hangman.MakeGuess('a');	// doesn't count against guesses since it's right
+		hangman.MakeGuess('a');	// the rest of these decrement
+		hangman.MakeGuess('a');
+		hangman.MakeGuess('a');
+		assertTrue(hangman.isActive);
+		hangman.MakeGuess('a');
+		hangman.MakeGuess('a');
+		assertTrue(hangman.isActive);
+		hangman.MakeGuess('a');
+		assertTrue(hangman.isActive);
+		hangman.MakeGuess('b');
+		assertTrue(hangman.isFound());
+		assertFalse(hangman.isActive);
 	}
 }

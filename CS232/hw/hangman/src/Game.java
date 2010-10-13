@@ -7,6 +7,8 @@ public class Game {
 	private String displayableWord;
 	private int wrongGuesses;
 	private int rightGuesses;
+	public boolean isActive = true;
+	private String charactersUsed;
 	
 	public static void main(String[] args) {
 		Game hangman = new Game();
@@ -19,7 +21,7 @@ public class Game {
 	
 	public Game() {
 		// initialize fields
-		displayableWord = secretWord = "";
+		displayableWord = secretWord = charactersUsed = "";
 		wrongGuesses = rightGuesses = 0;
 	}
 	
@@ -32,23 +34,36 @@ public class Game {
 		boolean result = false;
 		String strChar = String.valueOf(c);
 		
-		if (secretWord.contains(strChar)) {
+		// check if the word contains the letter AND it hasn't be used yet
+		if (secretWord.contains(strChar) && !charactersUsed.contains(strChar)) {
 			++rightGuesses;
 			result = true;
+			charactersUsed += c;
+
+			String tmpWord = secretWord;
+			while (tmpWord.contains(strChar)) {
+				int pos = tmpWord.indexOf(strChar);
+				tmpWord = tmpWord.replaceFirst(strChar, "-");
+				updateDisplayableWord(strChar, pos);
+			}
 		} else {
 			++wrongGuesses;
 		}
 		
-		String tmpWord = secretWord;
-		while (tmpWord.contains(strChar)) {
-			int pos = tmpWord.indexOf(strChar);
-			tmpWord = tmpWord.replaceFirst(strChar, "-");
-			updateDisplayableWord(strChar, pos);
+		System.out.println(guessesRemaining() + " guesses remaining");
+		// end the game if they're out of turns or guessed word
+		if (guessesRemaining() == 0 || isFound() == true) {
+			endGame();
 		}
 		
 		return result;
 	}
 	
+	private void endGame() {
+		isActive = false;
+		// print out mad shit...
+	}
+
 	void updateDisplayableWord(String c, int position) {
 		displayableWord = displayableWord.substring(0, position) + c + displayableWord.substring(position+1);
 	}
@@ -74,7 +89,7 @@ public class Game {
 	}
 	
 	boolean isFound() {
-		return secretWord == displayableWord;
+		return secretWord.equals(displayableWord);
 	}
 
 	public void setWord(String word) {
@@ -82,11 +97,13 @@ public class Game {
 		
 		// create the displayable word (same length, obscured characters)
 		for (int i = 0; i < secretWord.length(); i++) {
-			displayableWord += "-";
+			displayableWord += (secretWord.charAt(i) == ' ') 
+									? " " 	// retain spaces for clarity
+									: "-";	// otherwise obscure letter
 		}
 	}
 	
 	public int guessesRemaining() {
-		return ALLOWED_GUESSES - wrongGuesses;
+		return (ALLOWED_GUESSES - wrongGuesses);
 	}
 }
