@@ -2,7 +2,6 @@
 public class Game {
 	
 	public final int ALLOWED_GUESSES = 7;
-	
 	private String secretWord;
 	private String displayableWord;
 	private int wrongGuesses;
@@ -38,7 +37,6 @@ public class Game {
 	}
 	
 	public boolean MakeGuess(char c) {
-		
 		// don't let them start playing until they've set the word
 		if (secretWord == "")
 			throw new RuntimeException("You must enter a secret word before playing");
@@ -48,21 +46,12 @@ public class Game {
 		
 		// check if the word contains the letter AND it hasn't be used yet
 		if (secretWord.contains(strChar) && !charactersUsed.contains(strChar)) {
-			++rightGuesses;
 			result = true;
-			charactersUsed += c;
-
-			String tmpWord = secretWord;
-			while (tmpWord.contains(strChar)) {
-				int pos = tmpWord.indexOf(strChar);
-				tmpWord = tmpWord.replaceFirst(strChar, "-");
-				updateDisplayableWord(strChar, pos);
-			}
+			guessedRight(strChar);
 		} else {
-			++wrongGuesses;
+			guessedWrong(strChar);
 		}
 		
-		System.out.println(guessesRemaining() + " guesses remaining");
 		// end the game if they're out of turns or guessed word
 		if (guessesRemaining() == 0 || isFound() == true) {
 			endGame();
@@ -70,41 +59,52 @@ public class Game {
 		
 		return result;
 	}
-	
-	private void endGame() {
-		isActive = false;
-		// print out mad shit...
+
+	private void guessedRight(String character) {
+		++rightGuesses;
+		charactersUsed += character;
+		updateDisplayableWord(character);
 	}
 
-	void updateDisplayableWord(String c, int position) {
-		displayableWord = displayableWord.substring(0, position) + c + displayableWord.substring(position+1);
+	private void guessedWrong(String character) {
+		++wrongGuesses;
+	}
+
+	private void updateDisplayableWord(String character) {
+		String tmpWord = secretWord;
+		while (tmpWord.contains(character)) {
+			int pos = tmpWord.indexOf(character);	// get position of character
+			tmpWord = tmpWord.replaceFirst(character, "-");
+			displayableWord = displayableWord.substring(0, pos) + character + displayableWord.substring(pos+1);
+		}
 	}
 	
 	void displayMan() {
 		System.out.println("blah blah blah");
 	}
 	
+	private void endGame() {
+		isActive = false;
+		// print out mad shit... depending on outcome
+	}
+	
 	String getDisplayableWord() {
 		return displayableWord;
-	}
-	
-	String getHiddenString() {
-		return secretWord;
-	}
-	
-	int getGuessCount() {
-		return this.wrongGuesses + this.rightGuesses;
 	}
 	
 	int getBadGuessCount() {
 		return this.wrongGuesses;
 	}
 	
-	boolean isFound() {
-		return secretWord.equals(displayableWord);
+	int getGuessCount() {
+		return this.wrongGuesses + this.rightGuesses;
 	}
 	
 	public int guessesRemaining() {
 		return (ALLOWED_GUESSES - wrongGuesses);
+	}
+	
+	boolean isFound() {
+		return secretWord.equals(displayableWord);
 	}
 }

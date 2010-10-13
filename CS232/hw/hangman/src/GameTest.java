@@ -15,16 +15,24 @@ public class GameTest {
 		assertNotNull(hangman);
 	} 
 	
+	
+	@Test(expected=RuntimeException.class) 
+	public void cantDoAnythingUntilWordIsSet() {
+		hangman.MakeGuess('a');
+	}
+	
 	@Test public void canSetWord() {
-		String word = "secret";
+		String word = "test";
 		hangman.setWord(word);
-		assertEquals(word, hangman.getHiddenString());
+		assertTrue(hangman.MakeGuess('t'));
+		assertTrue(hangman.MakeGuess('e'));
+		assertTrue(hangman.MakeGuess('s'));
+		assertEquals("test", hangman.getDisplayableWord());
 	}
 	
 	@Test public void spacesDontCount() {
 		String word = "just a test";
 		hangman.setWord(word);
-		assertEquals(word, hangman.getHiddenString());	// sanity check
 		assertEquals("---- - ----", hangman.getDisplayableWord());
 	}
 	
