@@ -1,0 +1,17 @@
+X Game can be created
+* Game can be quit in the middle
+X Allow entry of hidden word
+X Bad guess decreases remaining guesses
+X Right guess doesn't decrease remaining guesses
+* Right guess updates displayable word to show correct letter(s)
+* When last correct letter is guessed, the game should be over
+* If guesses are exceeded without solving, game should be over but not successful 
+* If all characters have been found, isFound should return true
+* Spaces aren't characters in secret word
+
+* Game status can be printed
+
+* Can't make any guesses until the word is set
+
+
+* Make everything PRIVATE!
