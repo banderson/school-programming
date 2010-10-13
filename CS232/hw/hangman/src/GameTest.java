@@ -72,6 +72,8 @@ public class GameTest {
 	@Test public void displayableWordUpdatesWhenSecretWordIsInitialized() {
 		hangman.setWord("test word");
 		assertEquals("---- ----", hangman.getDisplayableWord());
+		hangman.setWord("testinggggggg");
+		assertEquals("-------------", hangman.getDisplayableWord());
 	}
 	
 	@Test public void displayableWordUpdatesOnRightGuess() {

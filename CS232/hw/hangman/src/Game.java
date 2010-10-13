@@ -24,6 +24,18 @@ public class Game {
 		displayableWord = secretWord = charactersUsed = "";
 		wrongGuesses = rightGuesses = 0;
 	}
+
+	public void setWord(String word) {
+		secretWord = word;
+		
+		// create the displayable word (same length, obscured characters)
+		displayableWord = "";
+		for (int i = 0; i < secretWord.length(); i++) {
+			displayableWord += (secretWord.charAt(i) == ' ') 
+									? " " 	// retain spaces for clarity
+									: "-";	// otherwise obscure letter
+		}
+	}
 	
 	public boolean MakeGuess(char c) {
 		
@@ -90,17 +102,6 @@ public class Game {
 	
 	boolean isFound() {
 		return secretWord.equals(displayableWord);
-	}
-
-	public void setWord(String word) {
-		secretWord = word;
-		
-		// create the displayable word (same length, obscured characters)
-		for (int i = 0; i < secretWord.length(); i++) {
-			displayableWord += (secretWord.charAt(i) == ' ') 
-									? " " 	// retain spaces for clarity
-									: "-";	// otherwise obscure letter
-		}
 	}
 	
 	public int guessesRemaining() {
