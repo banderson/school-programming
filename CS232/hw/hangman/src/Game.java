@@ -1,6 +1,6 @@
+import java.util.Scanner;
 
 public class Game {
-	
 	public final int ALLOWED_GUESSES = 7;
 	private String secretWord;
 	private String displayableWord;
@@ -11,11 +11,41 @@ public class Game {
 	
 	public static void main(String[] args) {
 		Game hangman = new Game();
-		hangman.displayMan();
-		hangman.setWord("testing");
-		hangman.MakeGuess('t');
-		hangman.MakeGuess('e');
-		System.out.println(hangman.getDisplayableWord());
+
+		Scanner input = new Scanner(System.in);
+		System.out.println("Enter a secret word:");
+		String word = input.next();
+		// TODO add error checking around input
+		hangman.setWord(word);
+		
+		do {
+			System.out.println("Your guess: ");
+			String guess = input.next();
+			if (guess.length() == 1) {
+				boolean success = hangman.MakeGuess(guess);
+				if (success) {
+					System.out.println("Correct!");
+				} else {
+					System.out.println("Try again...");
+				}
+			} else if (guess.equals("quit")) {
+				// you can quit the game any time
+				System.out.println("Why quit?");
+				break;
+			} else {
+				System.out.println("Invalid input, try again...");
+			}
+			
+			// redraw screen
+			hangman.displayMan();
+		} while (hangman.guessesRemaining() > 0 && !hangman.isFound());
+		
+		if (hangman.isFound()) {
+			System.out.println("Game Over...... YOU'RE BRILLIANT!!");
+		} else {
+			System.out.println("Game Over...... YOU SUCK!!");
+		}
+		
 	}
 	
 	public Game() {
@@ -36,20 +66,21 @@ public class Game {
 		}
 	}
 	
-	public boolean MakeGuess(char c) {
+	public boolean MakeGuess(String c) {
 		// don't let them start playing until they've set the word
 		if (secretWord == "")
 			throw new RuntimeException("You must enter a secret word before playing");
 		
 		boolean result = false;
-		String strChar = String.valueOf(c);
+		// the game is case-insensitive
+		c = c.toLowerCase();
 		
 		// check if the word contains the letter AND it hasn't be used yet
-		if (secretWord.contains(strChar) && !charactersUsed.contains(strChar)) {
+		if (secretWord.toLowerCase().contains(c) && !charactersUsed.contains(c)) {
 			result = true;
-			guessedRight(strChar);
+			guessedRight(c);
 		} else {
-			guessedWrong(strChar);
+			guessedWrong(c);
 		}
 		
 		// end the game if they're out of turns or guessed word
@@ -58,6 +89,10 @@ public class Game {
 		}
 		
 		return result;
+	}
+	
+	public boolean MakeGuess(char c) {
+		return MakeGuess(String.valueOf(c));
 	}
 
 	private void guessedRight(String character) {
@@ -71,7 +106,8 @@ public class Game {
 	}
 
 	private void updateDisplayableWord(String character) {
-		String tmpWord = secretWord;
+		String tmpWord = secretWord.toLowerCase();
+		character = character.toLowerCase();
 		while (tmpWord.contains(character)) {
 			int pos = tmpWord.indexOf(character);	// get position of character
 			tmpWord = tmpWord.replaceFirst(character, "-");
@@ -80,7 +116,7 @@ public class Game {
 	}
 	
 	void displayMan() {
-		System.out.println("blah blah blah");
+		System.out.println("Current status: "+ getDisplayableWord());
 	}
 	
 	private void endGame() {
@@ -90,6 +126,10 @@ public class Game {
 	
 	String getDisplayableWord() {
 		return displayableWord;
+	}
+	
+	String getHiddenWord() {
+		return secretWord;
 	}
 	
 	int getBadGuessCount() {

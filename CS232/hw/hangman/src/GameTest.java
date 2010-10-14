@@ -30,6 +30,15 @@ public class GameTest {
 		assertEquals("test", hangman.getDisplayableWord());
 	}
 	
+	@Test public void gameIsCaseInsensitive() {
+		String word = "TeSt";
+		hangman.setWord(word);
+		assertTrue(hangman.MakeGuess('t'));
+		assertTrue(hangman.MakeGuess('e'));
+		assertTrue(hangman.MakeGuess('s'));
+		assertEquals("TeSt", hangman.getHiddenWord());
+	}
+	
 	@Test public void spacesDontCount() {
 		String word = "just a test";
 		hangman.setWord(word);

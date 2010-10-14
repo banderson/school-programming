@@ -1,4 +1,7 @@
-GAME CORE:
+TASKS:
+* Write out algorithm for main loop
+
+TESTS:
 X Game can be created
 X Allow entry of hidden word
 X Spaces aren't characters in secret word
@@ -13,8 +16,8 @@ X If guesses are exceeded without solving, game should be over but not successfu
 X If all characters have been found, isFound should return true
 * Make everything PRIVATE!
 
-UI:
+UI TESTS:
 * User is prompted to enter a word
-* Game continually asks for letters until max is reached or word is discovered
-* Game reprints after each guess 
-* Game can be quit in the middle
+X Game continually asks for letters until max is reached or word is discovered
+X Game can be quit in the middle
+* Game reprints full hangman game after each guess
