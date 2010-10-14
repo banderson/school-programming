@@ -30,7 +30,7 @@ public class Game {
 				}
 			} else if (guess.equals("quit")) {
 				// you can quit the game any time
-				System.out.println("Why quit?");
+				System.out.println("Sorry to see you go...");
 				break;
 			} else {
 				System.out.println("Invalid input, try again...");
@@ -38,6 +38,7 @@ public class Game {
 			
 			// redraw screen
 			hangman.displayMan();
+			
 		} while (hangman.guessesRemaining() > 0 && !hangman.isFound());
 		
 		if (hangman.isFound()) {
@@ -107,9 +108,9 @@ public class Game {
 
 	private void updateDisplayableWord(String character) {
 		String tmpWord = secretWord.toLowerCase();
-		character = character.toLowerCase();
-		while (tmpWord.contains(character)) {
-			int pos = tmpWord.indexOf(character);	// get position of character
+		//character = character.toLowerCase();
+		while (tmpWord.contains(character.toLowerCase())) {
+			int pos = tmpWord.indexOf(character.toLowerCase());	// get position of character
 			tmpWord = tmpWord.replaceFirst(character, "-");
 			displayableWord = displayableWord.substring(0, pos) + character + displayableWord.substring(pos+1);
 		}
@@ -145,6 +146,6 @@ public class Game {
 	}
 	
 	boolean isFound() {
-		return secretWord.equals(displayableWord);
+		return secretWord.equalsIgnoreCase(displayableWord);
 	}
 }

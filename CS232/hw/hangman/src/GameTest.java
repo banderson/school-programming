@@ -114,9 +114,9 @@ public class GameTest {
 	}
 	
 	@Test public void gameIsOverWhenWordIsDiscovered() {
-		hangman.setWord("aabb");
+		hangman.setWord("Aabb");
 		assertFalse(hangman.isFound());
-		hangman.MakeGuess('a');
+		hangman.MakeGuess('A');
 		assertFalse(hangman.isFound());
 		hangman.MakeGuess('b');
 		assertTrue(hangman.isFound());
