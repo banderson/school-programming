@@ -18,24 +18,24 @@ public class GameTest {
 	
 	@Test(expected=RuntimeException.class) 
 	public void cantDoAnythingUntilWordIsSet() {
-		hangman.MakeGuess('a');
+		hangman.MakeGuess("a");
 	}
 	
 	@Test public void canSetWord() {
 		String word = "test";
 		hangman.setWord(word);
-		assertTrue(hangman.MakeGuess('t'));
-		assertTrue(hangman.MakeGuess('e'));
-		assertTrue(hangman.MakeGuess('s'));
+		assertTrue(hangman.MakeGuess("t"));
+		assertTrue(hangman.MakeGuess("e"));
+		assertTrue(hangman.MakeGuess("s"));
 		assertEquals("test", hangman.getDisplayableWord());
 	}
 	
 	@Test public void gameIsCaseInsensitive() {
 		String word = "TeSt";
 		hangman.setWord(word);
-		assertTrue(hangman.MakeGuess('t'));
-		assertTrue(hangman.MakeGuess('e'));
-		assertTrue(hangman.MakeGuess('s'));
+		assertTrue(hangman.MakeGuess("t"));
+		assertTrue(hangman.MakeGuess("e"));
+		assertTrue(hangman.MakeGuess("s"));
 		assertEquals("TeSt", hangman.getHiddenWord());
 	}
 	
@@ -53,22 +53,22 @@ public class GameTest {
 		hangman.setWord("word test");
 		
 		assertEquals(7, hangman.guessesRemaining());
-		hangman.MakeGuess('a');
+		hangman.MakeGuess("a");
 		assertEquals(6, hangman.guessesRemaining());
-		hangman.MakeGuess('z');
+		hangman.MakeGuess("z");
 		assertEquals(5, hangman.guessesRemaining());
 	}
 	
 	@Test public void repeatedCharactersCountAsBadBuess() {
 		hangman.setWord("word test");
 		assertEquals(7, hangman.guessesRemaining());
-		hangman.MakeGuess('a');	// decrements
+		hangman.MakeGuess("a");	// decrements
 		assertEquals(6, hangman.guessesRemaining());
-		hangman.MakeGuess('a');	// decrements
+		hangman.MakeGuess("a");	// decrements
 		assertEquals(5, hangman.guessesRemaining());
-		hangman.MakeGuess('w');	// doesn't decrement
+		hangman.MakeGuess("w");	// doesn't decrement
 		assertEquals(5, hangman.guessesRemaining());
-		hangman.MakeGuess('w');	// decrements (dupe)
+		hangman.MakeGuess("w");	// decrements (dupe)
 		assertEquals(4, hangman.guessesRemaining());
 	}
 	
@@ -76,9 +76,9 @@ public class GameTest {
 		hangman.setWord("word test");
 		
 		assertEquals(7, hangman.guessesRemaining());
-		hangman.MakeGuess('w');
+		hangman.MakeGuess("w");
 		assertEquals(7, hangman.guessesRemaining());
-		hangman.MakeGuess('o');
+		hangman.MakeGuess("o");
 		assertEquals(7, hangman.guessesRemaining());
 	}
 	
@@ -95,70 +95,68 @@ public class GameTest {
 	
 	@Test public void displayableWordUpdatesOnRightGuess() {
 		hangman.setWord("testing");
-		hangman.MakeGuess('t');
+		hangman.MakeGuess("t");
 		assertEquals("t--t---", hangman.getDisplayableWord());
-		hangman.MakeGuess('g');
+		hangman.MakeGuess("g");
 		assertEquals("t--t--g", hangman.getDisplayableWord());
-		hangman.MakeGuess('e');
+		hangman.MakeGuess("e");
 		assertEquals("te-t--g", hangman.getDisplayableWord());
 	}
 
 	@Test public void displayableWordRemainsOnBadGuess() {
 		hangman.setWord("testing");
-		hangman.MakeGuess('z');
+		hangman.MakeGuess("z");
 		assertEquals("-------", hangman.getDisplayableWord());
-		hangman.MakeGuess('q');
+		hangman.MakeGuess("q");
 		assertEquals("-------", hangman.getDisplayableWord());
-		hangman.MakeGuess('f');
+		hangman.MakeGuess("f");
 		assertEquals("-------", hangman.getDisplayableWord());
 	}
 	
 	@Test public void gameIsOverWhenWordIsDiscovered() {
 		hangman.setWord("Aabb");
 		assertFalse(hangman.isFound());
-		hangman.MakeGuess('A');
+		hangman.MakeGuess("A");
 		assertFalse(hangman.isFound());
-		hangman.MakeGuess('b');
+		hangman.MakeGuess("b");
 		assertTrue(hangman.isFound());
-		assertFalse(hangman.isActive);
+		assertFalse(hangman.gameIsActive());
 	}
 	
 	// TODO refactor this and prev method
 	@Test public void gameIsOverWhenMaxGuessesExceeded() {
-		assertTrue(hangman.isActive);
 		hangman.setWord("aabb");
-		assertTrue(hangman.isActive);
-		hangman.MakeGuess('a');	// doesn't count against guesses since it's right
-		hangman.MakeGuess('a');	// the rest of these decrement
-		hangman.MakeGuess('a');
-		hangman.MakeGuess('a');
-		assertTrue(hangman.isActive);
-		hangman.MakeGuess('a');
-		hangman.MakeGuess('a');
-		assertTrue(hangman.isActive);
-		hangman.MakeGuess('a');
-		assertTrue(hangman.isActive);
-		hangman.MakeGuess('a');
-		assertFalse(hangman.isActive);
+		assertTrue(hangman.gameIsActive());
+		hangman.MakeGuess("a");	// doesn't count against guesses since it's right
+		hangman.MakeGuess("a");	// the rest of these decrement
+		hangman.MakeGuess("a");
+		hangman.MakeGuess("a");
+		assertTrue(hangman.gameIsActive());
+		hangman.MakeGuess("a");
+		hangman.MakeGuess("a");
+		assertTrue(hangman.gameIsActive());
+		hangman.MakeGuess("a");
+		assertTrue(hangman.gameIsActive());
+		hangman.MakeGuess("a");
+		assertFalse(hangman.gameIsActive());
 	}
 	
 	// TODO refactor this and prev 2 method
 	@Test public void gameIsOverWithMatchWhenWordGuesedOnLastGuess() {
-		assertTrue(hangman.isActive);
 		hangman.setWord("aabb");
-		assertTrue(hangman.isActive);
-		hangman.MakeGuess('a');	// doesn't count against guesses since it's right
-		hangman.MakeGuess('a');	// the rest of these decrement
-		hangman.MakeGuess('a');
-		hangman.MakeGuess('a');
-		assertTrue(hangman.isActive);
-		hangman.MakeGuess('a');
-		hangman.MakeGuess('a');
-		assertTrue(hangman.isActive);
-		hangman.MakeGuess('a');
-		assertTrue(hangman.isActive);
-		hangman.MakeGuess('b');
+		assertTrue(hangman.gameIsActive());
+		hangman.MakeGuess("a");	// doesn't count against guesses since it's right
+		hangman.MakeGuess("a");	// the rest of these decrement
+		hangman.MakeGuess("a");
+		hangman.MakeGuess("a");
+		assertTrue(hangman.gameIsActive());
+		hangman.MakeGuess("a");
+		hangman.MakeGuess("a");
+		assertTrue(hangman.gameIsActive());
+		hangman.MakeGuess("a");
+		assertTrue(hangman.gameIsActive());
+		hangman.MakeGuess("b");
 		assertTrue(hangman.isFound());
-		assertFalse(hangman.isActive);
+		assertFalse(hangman.gameIsActive());
 	}
 }

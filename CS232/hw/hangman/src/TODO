@@ -1,5 +1,6 @@
 TASKS:
 * Write out algorithm for main loop
+* Get all input via method
 
 TESTS:
 X Game can be created
@@ -17,7 +18,7 @@ X If all characters have been found, isFound should return true
 * Make everything PRIVATE!
 
 UI TESTS:
-* User is prompted to enter a word
+X User is prompted to enter a word
 X Game continually asks for letters until max is reached or word is discovered
 X Game can be quit in the middle
-* Game reprints full hangman game after each guess
+X Game reprints full hangman game after each guess

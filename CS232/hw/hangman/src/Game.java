@@ -6,27 +6,27 @@ public class Game {
 	private String displayableWord;
 	private int wrongGuesses;
 	private int rightGuesses;
-	public boolean isActive = true;
 	private String charactersUsed;
 	
 	public static void main(String[] args) {
 		Game hangman = new Game();
 
-		Scanner input = new Scanner(System.in);
-		System.out.println("Enter a secret word:");
-		String word = input.next();
+		System.out.println("\nEnter a secret word:");
+
 		// TODO add error checking around input
+		Scanner input = new Scanner(System.in);
+		String word = input.next();
 		hangman.setWord(word);
 		
 		do {
-			System.out.println("Your guess: ");
+			System.out.println("Guess a letter (or 'quit' to end): ");
 			String guess = input.next();
 			if (guess.length() == 1) {
 				boolean success = hangman.MakeGuess(guess);
 				if (success) {
 					System.out.println("Correct!");
 				} else {
-					System.out.println("Try again...");
+					System.out.println("Sorry, try again...");
 				}
 			} else if (guess.equals("quit")) {
 				// you can quit the game any time
@@ -37,14 +37,14 @@ public class Game {
 			}
 			
 			// redraw screen
-			hangman.displayMan();
+			System.out.println(hangman.displayMan());
 			
-		} while (hangman.guessesRemaining() > 0 && !hangman.isFound());
+		} while (hangman.gameIsActive());
 		
 		if (hangman.isFound()) {
-			System.out.println("Game Over...... YOU'RE BRILLIANT!!");
+			System.out.println("CONGRATS, YOU WIN!");
 		} else {
-			System.out.println("Game Over...... YOU SUCK!!");
+			System.out.println("Game Over... Better luck next time.");
 		}
 		
 	}
@@ -84,16 +84,7 @@ public class Game {
 			guessedWrong(c);
 		}
 		
-		// end the game if they're out of turns or guessed word
-		if (guessesRemaining() == 0 || isFound() == true) {
-			endGame();
-		}
-		
 		return result;
-	}
-	
-	public boolean MakeGuess(char c) {
-		return MakeGuess(String.valueOf(c));
 	}
 
 	private void guessedRight(String character) {
@@ -108,7 +99,6 @@ public class Game {
 
 	private void updateDisplayableWord(String character) {
 		String tmpWord = secretWord.toLowerCase();
-		//character = character.toLowerCase();
 		while (tmpWord.contains(character.toLowerCase())) {
 			int pos = tmpWord.indexOf(character.toLowerCase());	// get position of character
 			tmpWord = tmpWord.replaceFirst(character, "-");
@@ -116,13 +106,55 @@ public class Game {
 		}
 	}
 	
-	void displayMan() {
-		System.out.println("Current status: "+ getDisplayableWord());
+	String displayMan() {
+		String output = "\n";
+		output += " +------+\n";
+		output += " |      |\n";
+		output += " 1      |\n";
+		output += "234     |\n";
+		output += " 5      |\n";
+		output += "6 7     |\n";
+		output += "        |\n";
+		output += "    ----+----\n\n";
+		
+		// for each bad guess, swap the placeholder with body part character
+		for (int i = 1; i <= getBadGuessCount(); i++) {
+			output = output.replace(Character.forDigit(i, 10), getBodyPart(i));
+		}
+		
+		// remove the remaining placeholders
+		output = output.replaceAll("[0-9]", " ");
+		
+		output += "Word ("+ getDisplayableWord().length() +" letters): "+ getDisplayableWord();
+		
+		return output;
 	}
 	
-	private void endGame() {
-		isActive = false;
-		// print out mad shit... depending on outcome
+	private char getBodyPart(int guess) {
+		char output;
+		
+		switch (guess) {
+		case 1:
+			output = 'O';
+			break;
+		case 2:
+		case 7:
+			output = '\\';
+			break;
+		case 3:
+		case 5:
+			output = '|';
+			break;
+		case 4:
+		case 6:
+			output = '/';
+			break;
+		default:
+			output = ' ';
+			break;
+		}
+		
+		return output;
 	}
 	
 	String getDisplayableWord() {
@@ -134,11 +166,11 @@ public class Game {
 	}
 	
 	int getBadGuessCount() {
-		return this.wrongGuesses;
+		return wrongGuesses;
 	}
 	
 	int getGuessCount() {
-		return this.wrongGuesses + this.rightGuesses;
+		return wrongGuesses + rightGuesses;
 	}
 	
 	public int guessesRemaining() {
@@ -147,5 +179,9 @@ public class Game {
 	
 	boolean isFound() {
 		return secretWord.equalsIgnoreCase(displayableWord);
+	}
+	
+	boolean gameIsActive() {
+		return guessesRemaining() > 0 && !isFound();
 	}
 }
