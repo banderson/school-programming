@@ -2,10 +2,8 @@ import java.util.Scanner;
 
 public class Game {
 	private final int ALLOWED_GUESSES = 7;
-	private String secretWord;
-	private String displayableWord;
-	private int wrongGuesses;
-	private int rightGuesses;
+	private String secretWord, displayableWord;
+	private int wrongGuesses, rightGuesses;
 	
 	public static void main(String[] args) {
 		Game hangman = new Game();
@@ -30,7 +28,7 @@ public class Game {
 			} else if (guess.equals("quit")) {
 				// you can quit the game any time
 				System.out.println("Sorry to see you go...");
-				break;
+				break; // exit the game
 			} else {
 				System.out.println("Invalid input, try again...");
 			}
@@ -40,6 +38,7 @@ public class Game {
 			
 		} while (hangman.gameIsActive());
 		
+		// print the result
 		if (hangman.isFound()) {
 			System.out.println("CONGRATS, YOU WIN!");
 		} else {
@@ -55,7 +54,6 @@ public class Game {
 
 	public void setWord(String word) {
 		secretWord = word;
-		
 		// create the displayable word (same length, obscured characters)
 		displayableWord = secretWord.replaceAll("[a-zA-Z]", "-");
 	}
@@ -73,28 +71,20 @@ public class Game {
 		// check if the word contains the letter AND it hasn't be used yet
 		if (secretWord.toLowerCase().contains(c) && !displayableWord.toLowerCase().contains(c)) {
 			result = true;
-			guessedRight(c);
+			++rightGuesses;
+			updateDisplayableWord(c);
 		} else {
-			guessedWrong(c);
+			++wrongGuesses;
 		}
 		
 		return result;
 	}
 
-	private void guessedRight(String character) {
-		++rightGuesses;
-		updateDisplayableWord(character);
-	}
-
-	private void guessedWrong(String character) {
-		++wrongGuesses;
-	}
-
 	private void updateDisplayableWord(String character) {
-		String tmpWord = secretWord.toLowerCase();
+		String tmpWord = secretWord.toLowerCase();				// make a copy of the word so we can alter it
 		while (tmpWord.contains(character.toLowerCase())) {
 			int pos = tmpWord.indexOf(character.toLowerCase());	// get position of character
-			tmpWord = tmpWord.replaceFirst(character, "-");		// make sure it's not used on next iteration
+			tmpWord = tmpWord.replaceFirst(character, "-");		// remove it so it's not used on next iteration
 			// swap the correct character into the displayable word based on its position in hidden string
 			displayableWord = displayableWord.substring(0, pos) + character + displayableWord.substring(pos+1);
 		}
@@ -125,27 +115,16 @@ public class Game {
 	}
 	
 	private char getBodyPart(int guess) {
-		char output;
+		char output = ' ';
 		
 		switch (guess) {
-		case 1:
-			output = 'O';
-			break;
-		case 2:
-		case 7:
-			output = '\\';
-			break;
-		case 3:
-		case 5:
-			output = '|';
-			break;
-		case 4:
-		case 6:
-			output = '/';
-			break;
-		default:
-			output = ' ';
-			break;
+			case 1: output = 'O'; break;
+			case 2:
+			case 7: output = '\\'; break;
+			case 3:
+			case 5: output = '|'; break;
+			case 4:
+			case 6: output = '/'; break;
 		}
 		
 		return output;
