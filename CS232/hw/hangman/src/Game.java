@@ -7,17 +7,14 @@ public class Game {
 	
 	public static void main(String[] args) {
 		Game hangman = new Game();
-
+		
 		System.out.println("\nEnter a secret word:");
-
-		// TODO add error checking around input
-		Scanner input = new Scanner(System.in);
-		String word = input.next();
+		String word = getUserInput();
 		hangman.setWord(word);
 		
 		do {
 			System.out.println("Guess a letter (or 'quit' to end): ");
-			String guess = input.next();
+			String guess = getUserInput();
 			if (guess.length() == 1) {
 				boolean success = hangman.MakeGuess(guess);
 				if (success) {
@@ -44,12 +41,16 @@ public class Game {
 		} else {
 			System.out.println("Game Over... Better luck next time.");
 		}
-		
+	}
+	
+	private static String getUserInput() {
+		// TODO add error handling?
+		Scanner input = new Scanner(System.in);
+		return input.next();
 	}
 	
 	public Game() {
-		// initialize String objects
-		displayableWord = secretWord = "";
+		displayableWord = secretWord = ""; // initialize String objects
 	}
 
 	public void setWord(String word) {
@@ -80,13 +81,13 @@ public class Game {
 		return result;
 	}
 
-	private void updateDisplayableWord(String character) {
-		String tmpWord = secretWord.toLowerCase();				// make a copy of the word so we can alter it
-		while (tmpWord.contains(character.toLowerCase())) {
-			int pos = tmpWord.indexOf(character.toLowerCase());	// get position of character
-			tmpWord = tmpWord.replaceFirst(character, "-");		// remove it so it's not used on next iteration
-			// swap the correct character into the displayable word based on its position in hidden string
-			displayableWord = displayableWord.substring(0, pos) + character + displayableWord.substring(pos+1);
+	private void updateDisplayableWord(String c) {
+		String tmpWord = secretWord.toLowerCase(); // make local copy so we can alter it
+		while (tmpWord.contains(c.toLowerCase())) {
+			int pos = tmpWord.indexOf(c.toLowerCase()); // get position of character
+			tmpWord = tmpWord.replaceFirst(c, "-");	// remove it so it's not used again
+			// add correct character into displayable word based on position in hidden string
+			displayableWord = new StringBuffer(displayableWord).replace(pos, pos+1, c).toString();
 		}
 	}
 	
@@ -119,12 +120,9 @@ public class Game {
 		
 		switch (guess) {
 			case 1: output = 'O'; break;
-			case 2:
-			case 7: output = '\\'; break;
-			case 3:
-			case 5: output = '|'; break;
-			case 4:
-			case 6: output = '/'; break;
+			case 2: case 7: output = '\\'; break;
+			case 3: case 5: output = '|'; break;
+			case 4: case 6: output = '/'; break;
 		}
 		
 		return output;
