@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 public class Game {
-	public final int ALLOWED_GUESSES = 7;
+	private final int ALLOWED_GUESSES = 7;
 	private String secretWord;
 	private String displayableWord;
 	private int wrongGuesses;

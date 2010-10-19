@@ -15,7 +15,7 @@ X Right guess updates displayable word to show correct letter(s)
 X When last correct letter is guessed, the game should be over
 X If guesses are exceeded without solving, game should be over but not successful 
 X If all characters have been found, isFound should return true
-* Make everything PRIVATE!
+X Make everything PRIVATE!
 
 UI TESTS:
 X User is prompted to enter a word
