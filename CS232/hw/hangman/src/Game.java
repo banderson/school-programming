@@ -6,7 +6,6 @@ public class Game {
 	private String displayableWord;
 	private int wrongGuesses;
 	private int rightGuesses;
-	private String charactersUsed;
 	
 	public static void main(String[] args) {
 		Game hangman = new Game();
@@ -50,21 +49,15 @@ public class Game {
 	}
 	
 	public Game() {
-		// initialize fields
-		displayableWord = secretWord = charactersUsed = "";
-		wrongGuesses = rightGuesses = 0;
+		// initialize String objects
+		displayableWord = secretWord = "";
 	}
 
 	public void setWord(String word) {
 		secretWord = word;
 		
 		// create the displayable word (same length, obscured characters)
-		displayableWord = "";
-		for (int i = 0; i < secretWord.length(); i++) {
-			displayableWord += (secretWord.charAt(i) == ' ') 
-									? " " 	// retain spaces for clarity
-									: "-";	// otherwise obscure letter
-		}
+		displayableWord = secretWord.replaceAll("[a-zA-Z]", "-");
 	}
 	
 	public boolean MakeGuess(String c) {
@@ -73,11 +66,12 @@ public class Game {
 			throw new RuntimeException("You must enter a secret word before playing");
 		
 		boolean result = false;
+		
 		// the game is case-insensitive
 		c = c.toLowerCase();
 		
 		// check if the word contains the letter AND it hasn't be used yet
-		if (secretWord.toLowerCase().contains(c) && !charactersUsed.contains(c)) {
+		if (secretWord.toLowerCase().contains(c) && !displayableWord.toLowerCase().contains(c)) {
 			result = true;
 			guessedRight(c);
 		} else {
@@ -89,7 +83,6 @@ public class Game {
 
 	private void guessedRight(String character) {
 		++rightGuesses;
-		charactersUsed += character;
 		updateDisplayableWord(character);
 	}
 
@@ -101,7 +94,8 @@ public class Game {
 		String tmpWord = secretWord.toLowerCase();
 		while (tmpWord.contains(character.toLowerCase())) {
 			int pos = tmpWord.indexOf(character.toLowerCase());	// get position of character
-			tmpWord = tmpWord.replaceFirst(character, "-");
+			tmpWord = tmpWord.replaceFirst(character, "-");		// make sure it's not used on next iteration
+			// swap the correct character into the displayable word based on its position in hidden string
 			displayableWord = displayableWord.substring(0, pos) + character + displayableWord.substring(pos+1);
 		}
 	}
