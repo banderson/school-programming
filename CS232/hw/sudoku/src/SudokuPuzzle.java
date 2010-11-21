@@ -152,19 +152,6 @@ public class SudokuPuzzle {
 		return true;
 	}
 	
-	public void solveCell(int row, int col) {
-		for (int i = 1; i <= 9; i++) {
-			//if (row == 1 && col == 0)
-				System.out.println("Trying "+ i + " for row "+ row +", col "+ col);
-			if (isAllowedValue(row, col, i)) {
-				addGuess(row, col, i);
-				return;
-			}
-		}
-		
-		throw new IllegalStateException();
-	}
-	
 	public boolean isFull() {
 		for (int x = 0; x < 9; x++) {
 			for (int y = 0; y < 9; y++) {

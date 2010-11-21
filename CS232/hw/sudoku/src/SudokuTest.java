@@ -190,36 +190,9 @@ public class SudokuTest {
 		game.addInitial(0, 0, 7);
 		Assert.assertTrue(game.isAllowedValue(0, 0, 7) == false);
 	}
-	
-	@Test public void canCheckIfBoardIsFull() {
-		Assert.assertTrue(game.isFull() == false);
-		fillBoard(game);
-		System.out.println(game.toString());
-		Assert.assertTrue(game.isFull() == true);
-	}
 
 	@After
 	public void tearDown() throws Exception {
-	}
-	
-
-	// helper method to fill the board with provided value
-	private void fillBoard(SudokuPuzzle game) {
-		// create the board
-		game.initBoard();
-		for (int x = 0; x < 9; x++) {
-			for (int y = 0; y < 9; y++) {
-				try {
-					if (game.getValueIn(x, y) == 0)
-						game.solveCell(x, y);
-				} catch (IllegalStateException e) {
-					System.out.println(game.toString());
-					System.out.println("Can't solve for row "+ x + ", column: "+ y);
-					e.printStackTrace();
-					return;
-				}
-			}
-		}
 	}
 
 }
