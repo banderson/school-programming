@@ -1,9 +1,5 @@
 TODO:
 
-* Can't input an invalid number for each cell
-* Make sure all input is within bounds
-* User can't enter already used numbers
-* Add hardcoded initial board setup
 * Add checkPuzzle method
 * Add reset method
 * Add input loop to main()
