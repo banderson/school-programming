@@ -69,14 +69,12 @@ public class SudokuTest {
 		// remove the used items...
 		opts = opts.replaceAll("[6|7],", "");
 		// ... and make sure the string matches
-		Assert.assertEquals(opts, game.getAllowedValuesString(0, 0));
-		
-		// repeat...
-		game.addInitial(0, 2, 1);
-		// remove the used items...
-		opts = opts.replaceAll("[1],", "");
-		// ... and make sure the string matches
-		Assert.assertEquals(opts, game.getAllowedValuesString(0, 0));
+		Assert.assertEquals(opts, game.getAllowedValuesString(0, 2));
+	}
+	
+	@Test public void canResetCellValueToItself() {
+		game.addGuess(0, 0, 7);
+		Assert.assertTrue(game.isAllowedValue(0, 0, 7) == true);
 	}
 	
 	@Test public void only1through9AreValid() {
@@ -186,9 +184,102 @@ public class SudokuTest {
 			opts[i] = i+1;
 		}
 		
-		Assert.assertTrue(game.isAllowedValue(0, 0, 7) == true);
+		Assert.assertTrue(game.isAllowedValue(0, 1, 7) == true);
+		Assert.assertTrue(game.isAllowedValue(1, 0, 7) == true);
+		Assert.assertTrue(game.isAllowedValue(1, 1, 7) == true);
 		game.addInitial(0, 0, 7);
-		Assert.assertTrue(game.isAllowedValue(0, 0, 7) == false);
+		Assert.assertTrue(game.isAllowedValue(0, 1, 7) == false);
+		Assert.assertTrue(game.isAllowedValue(1, 0, 7) == false);
+		Assert.assertTrue(game.isAllowedValue(1, 1, 7) == false);
+	}
+	
+	@Test public void canCheckIfPuzzleIsSolved() {
+		
+		game.addInitial(0, 0, 5);
+		game.addInitial(0, 1, 3);
+		game.addInitial(0, 4, 7);
+		
+		game.addInitial(1, 0, 6);
+		game.addInitial(1, 3, 1);
+		game.addInitial(1, 4, 9);
+		game.addInitial(1, 5, 5);
+		
+		game.addInitial(2, 1, 9);
+		game.addInitial(2, 2, 8);
+		game.addInitial(2, 7, 6);
+		
+		game.addInitial(3, 0, 8);
+		game.addInitial(3, 4, 6);
+		game.addInitial(3, 8, 3);
+		
+		game.addInitial(4, 0, 4);
+		game.addInitial(4, 3, 8);
+		game.addInitial(4, 5, 3);
+		game.addInitial(4, 8, 1);
+		
+		game.addInitial(5, 0, 7);
+		game.addInitial(5, 4, 2);
+		game.addInitial(5, 8, 6);
+		
+		game.addInitial(6, 1, 6);
+		game.addInitial(6, 6, 2);
+		game.addInitial(6, 7, 8);
+		
+		game.addInitial(7, 3, 4);
+		game.addInitial(7, 4, 1);
+		game.addInitial(7, 5, 9);
+		game.addInitial(7, 8, 5);
+		
+		game.addInitial(8, 4, 8);
+		game.addInitial(8, 7, 7);
+		game.addInitial(8, 8, 9);
+		
+		fillRow(0, "534678912", game);
+		fillRow(1, "672195348", game);
+		fillRow(2, "198342567", game);
+		fillRow(3, "859761423", game);
+		fillRow(4, "426853791", game);
+		fillRow(5, "713924856", game);
+		fillRow(6, "961537284", game);
+		fillRow(7, "287419635", game);
+		Assert.assertFalse(game.isFull());
+		Assert.assertFalse(game.isSolved());
+		fillRow(8, "345286179", game);
+		
+		Assert.assertTrue(game.isFull());
+		Assert.assertTrue(game.isSolved());
+		
+		game.printArray();
+	}
+	
+	private SudokuPuzzle fillRow(int rowNum, String vals, SudokuPuzzle game) {
+		for(int i = 0; i < 9; i++) {
+			char c = vals.charAt(i);
+			try {
+				game.addGuess(rowNum, i, Integer.parseInt(c + ""));
+			} catch (ImmutableValueException ex) {
+				// eat it
+			}
+		}
+		return game;
+	}
+	
+	@Test public void canResetPuzzle() {
+		Assert.assertEquals(game.getValueIn(0, 0), 0);
+		Assert.assertEquals(game.getValueIn(0, 1), 0);
+		Assert.assertEquals(game.getValueIn(0, 2), 0);
+		game.addGuess(0, 0, 1);
+		game.addGuess(0, 1, 2);
+		game.addInitial(0, 2, 7);
+		Assert.assertEquals(game.getValueIn(0, 0), 1);
+		Assert.assertEquals(game.getValueIn(0, 1), 2);
+		Assert.assertEquals(game.getValueIn(0, 2), 7);
+		
+		game.reset();
+		
+		Assert.assertEquals(game.getValueIn(0, 0), 0);
+		Assert.assertEquals(game.getValueIn(0, 1), 0);
+		Assert.assertEquals(game.getValueIn(0, 2), 7);
 	}
 
 	@After
