@@ -1,0 +1,27 @@
+TODO:
+ - Read pg 735 in book about Graphical Applications (anything in Head First?)
+
+
+High-level features:
+ - Open files
+ - Save files
+ - Search for text and highlight
+ - Search and replace all instances
+
+
+Implementation Notes:
+ - Find the library (swing?) that facilitates file opens
+ - Use a JTextArea to store the contents of the file
+ 	- Utilize getCaretPosition(), and other useful functions inherited from this
+ 	- Use the append() method to add new text
+ 	- Use getText to get text needed for file
+ - Above text area, include buttons to: Quit, Save, Open, Search, Replace
+ 	- Quit: must ask the user to save [if changes are made]
+ 	- Save: ask for a file name to save to
+ 	- Search: prompt for search text and direction
+ 	- Replace: same as search with another input for text to replace (can only replace forward if that's easier)
+ - Use JScrollPane to make the textarea scrollable
+
+
+Extra Credit:
+ - Implement change tracking so user only prompted to save on quitting if the file was actually changed
