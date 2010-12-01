@@ -46,7 +46,7 @@ public class SudokuPuzzle {
 			} catch (NumberFormatException e) {
 				System.out.println("Invalid Column, try again...");
 				continue;
-			} 
+			}
 			
 			try {
 				input = game.getInput();
@@ -83,94 +83,28 @@ public class SudokuPuzzle {
 	}
 	
 	private String getInput() {
-		// TODO add error handling?
 		Scanner in = new Scanner(System.in);
 		return in.next();
 	}
 	
 	public SudokuPuzzle() {
-		
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				board[i][j] = new Cell();
+			}
+		}
 	}
-	
-	// If a location on the board is empty it gets this value
-	private static int LOCATION_EMPTY = 0;
 
-	private int[][] board = new int[9][9];
-	private boolean[][] board_init = new boolean[9][9];
-	
-	public boolean isAllowedValue(int row, int col, int value) {
-		
-		if (value > 0 && value <= 9) {
-			return getAllowedValues(row, col)[value-1];
-		}
-		
-		return false;
-	}
-	
-	// Check for the valid options based on a row and column
-	// No return type but as a side effect it fills in the validNumbers array
-	// NOTE: copied from in-class code
-	private boolean[] getAllowedValues(int row, int col) {
-		
-		// allocate a valid numbers array
-		boolean[] valNums = new boolean[9];
-		
-		// Set all to true, rest of code will clear as needed
-		for (int i = 0; i < 9; i++)
-			valNums[i] = true;
-		
-		// check row
-		for (int i = 0; i < 9; i++) {
-			if (board[row][i] != LOCATION_EMPTY)  {
-				valNums[board[row][i]-1] = false;
-			}
-		}
-		
-		// check column
-		for (int i = 0; i < 9; i++) {
-			if (board[i][col] != LOCATION_EMPTY)  {
-				valNums[board[i][col]-1] = false;
-			}
-		}
-		
-		int rl = (row / 3) * 3;
-		int rh = rl + 3;
-		int cl = (col / 3) * 3;
-		int ch = cl + 3;
-		
-		for (int r = rl; r < rh; r++) {
-			for (int c = cl; c < ch; c++) {
-				if (board[r][c] != LOCATION_EMPTY) 
-					valNums[board[r][c]-1] = false;
-			}
-		}
-		
-		// if there's a value already, set that as allowable
-		//	(it technically is, and it helps testing)
-		int thisVal = getValueIn(row, col);
-		if (thisVal != LOCATION_EMPTY)
-			valNums[thisVal-1] = true;
-		
-		return valNums;
-	}
+	private Cell[][] board = new Cell[9][9];
 	
 	// returns the allowed values for a cell in print-friendly form
 	public String getAllowedValuesString(int row, int col) {
-		boolean[] vals = getAllowedValues(row, col);
-		String output = "";
-		
-		for (int i = 0; i < vals.length; i++) {
-			if (vals[i]) {
-				output += i+1 + ",";
-			}
-		}
-		
-		return output.substring(0, output.lastIndexOf(","));
+		return board[row][col].getAllowedValuesString();
 	}
 	
 	public void addInitial(int row, int col, int value) {
-		addGuess(row, col, value);	// set the value
-		board_init[row][col] = true;// lock it
+		board[row][col].setValue(value);
+		board[row][col].isFixed = true;	// lock it
 	}
 	
 	public void reset() {
@@ -178,34 +112,24 @@ public class SudokuPuzzle {
 			for (int j = 0; j < 9; j++) {
 				// retain preset fields
 				if (!isFixedValue(i, j)) {
-					board[i][j] = LOCATION_EMPTY;
+					board[i][j].isEmpty();
 				}
 			}
 		}
 	}
 	
+	public Cell cell(int row, int col) {
+		return board[row][col];
+	}
+	
 	public boolean addGuess(int row, int col, int value) {
-		// can't assign values to fixed spaces
-		if (isFixedValue(row, col))
-			throw new ImmutableValueException();
-		
-		// make sure values are in the right range
-		if (value > 9 || value <= 0)
-			throw new IllegalArgumentException("Value must be between 1 and 9");
-		
-		// enforce game logic
-		if (!isAllowedValue(row, col, value))
-			throw new DuplicateValueException();
-		
-		board[row][col] = value;
-		
-		return true;
+		return board[row][col].setValue(value);
 	}
 	
 	public boolean isFull() {
 		for (int x = 0; x < 9; x++) {
 			for (int y = 0; y < 9; y++) {
-				if (board[x][y] == LOCATION_EMPTY)
+				if (board[x][y].isEmpty())
 					return false;
 			}
 		}
@@ -214,12 +138,12 @@ public class SudokuPuzzle {
 	
 	public int getValueIn(int row, int col) {
 		// returns the value stored in a space
-		return board[row][col];
+		return board[row][col].value;
 	}
 	
 	public boolean isFixedValue(int row, int col) {
 		// returns true if the value in this space can't be changed
-		return board_init[row][col];
+		return board[row][col].isFixed;
 	}
 	
 	public String toString() {
@@ -229,7 +153,7 @@ public class SudokuPuzzle {
 		for (int i = 0; i < 9; i++) {
 			output += "| "; 
 			for (int j = 0; j < 9; j++) {
-				if (board[i][j] <= 0)
+				if (board[i][j].value <= 0)
 					output += "  ";
 				else
 					output += board[i][j] + " ";
@@ -251,9 +175,8 @@ public class SudokuPuzzle {
 	public boolean isSolved() {
 		for (int x = 0; x < 9; x++) {
 			for (int y = 0; y < 9; y++) {
-				// if every entry has only 1 available option, and it's the value of the cell itself, the puzzle is solved
-				// 	therefore, if that's not true at any point then it's not solved and we can bail
-				if (Integer.parseInt(getAllowedValuesString(x, y)) != (board[x][y])) {
+				// if every cell has their final solution in place...
+				if (board[x][y].isSolved()) {
 					return false;
 				}
 			}
@@ -302,13 +225,106 @@ public class SudokuPuzzle {
 		addInitial(8, 0, 5);
 		addInitial(8, 3, 9);
 	}
-	
-	public void printArray() {
-		for (int x = 0; x < 9; x++) {
-			for (int y = 0; y < 9; y++) {
-				System.out.print(board_init[x][y] + "|");
+
+	private class Cell {
+		private static final int LOCATION_EMPTY = 0;
+		public int row, column, value;
+		public boolean isFixed;
+		
+		public Cell() {
+			value = LOCATION_EMPTY;
+			column = row = 0;
+		}
+		
+		public boolean isEmpty() {
+			return value == LOCATION_EMPTY;
+		}
+		
+		public boolean isAllowed(int value) {
+			return getAllowedValues()[value-1];
+		}
+		
+		public boolean setValue(int value) {
+			if (isFixed)
+				throw new ImmutableValueException();
+			
+			// make sure values are in the right range
+			if (value > 9 || value <= 0)
+				throw new IllegalArgumentException("Value must be between 1 and 9");
+			
+			// enforce game logic
+			if (!isAllowed(value))
+				throw new DuplicateValueException();
+			
+			this.value = value;
+			
+			return true;
+		}
+		
+		public String getAllowedValuesString() {
+			boolean[] vals = getAllowedValues();
+			String output = "";
+			
+			for (int i = 0; i < vals.length; i++) {
+				if (vals[i]) {
+					output += i+1 + ",";
+				}
 			}
-			System.out.println();
+			
+			return output.substring(0, output.lastIndexOf(","));
+		}
+		
+		// Check for the valid options based on a row and column
+		// No return type but as a side effect it fills in the validNumbers array
+		// NOTE: copied from in-class code
+		private boolean[] getAllowedValues() {
+			
+			// allocate a valid numbers array
+			boolean[] valNums = new boolean[9];
+			
+			// Set all to true, rest of code will clear as needed
+			for (int i = 0; i < 9; i++)
+				valNums[i] = true;
+			
+			// check row
+			for (int i = 0; i < 9; i++) {
+				if (!board[row][i].isEmpty())  {
+					valNums[board[row][i].value-1] = false;
+				}
+			}
+			
+			// check column
+			for (int i = 0; i < 9; i++) {
+				if (!board[i][column].isEmpty())  {
+					valNums[board[i][column].value-1] = false;
+				}
+			}
+			
+			int rl = (row / 3) * 3;
+			int rh = rl + 3;
+			int cl = (column / 3) * 3;
+			int ch = cl + 3;
+			
+			for (int r = rl; r < rh; r++) {
+				for (int c = cl; c < ch; c++) {
+					if (!board[r][c].isEmpty()) 
+						valNums[board[r][c].value-1] = false;
+				}
+			}
+			
+			// if there's a value already, set that as allowable
+			//	(it technically is, and it helps testing)
+			int thisVal = getValueIn(row, column);
+			if (thisVal != LOCATION_EMPTY)
+				valNums[thisVal-1] = true;
+			
+			return valNums;
+		}
+		
+		public boolean isSolved() {
+			// if every entry has only 1 available option, and it's the value of the cell itself, the puzzle is solved
+			// 	therefore, if that's not true at any point then it's not solved and we can bail
+			return Integer.parseInt(getAllowedValuesString()) == value;
 		}
 	}
 }
