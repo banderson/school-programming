@@ -5,13 +5,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
-import com.sun.org.apache.bcel.internal.generic.NEW;
 
 public class App extends JFrame implements ActionListener {
 
@@ -23,7 +24,7 @@ public class App extends JFrame implements ActionListener {
 	}
 	
 	public App() {
-		setSize(400,300);
+		setSize(800,600);
 		
 		Container cp = getContentPane();
 		cp.setLayout(new BorderLayout());
@@ -31,13 +32,12 @@ public class App extends JFrame implements ActionListener {
 		// create buttons and wire up mediator and actionListener events
 		OpenButton openButton = new OpenButton(this, med);
 		SaveButton saveButton = new SaveButton(this, med);
-		SearchButton searchButton = new SearchButton(this, med);
 		QuitButton quitButton = new QuitButton(this, med);
 		// this handles cleanup when window is closed
 		WindowDestroyer wd = new WindowDestroyer(med);
 		addWindowListener(med.windowDestroyer);
 		
-		// build the layout!
+		// build the layout
 		JTextArea myText = new JTextArea();
 		med.registerTextArea(myText);
 		cp.add(new JScrollPane(myText), BorderLayout.CENTER);
@@ -46,9 +46,39 @@ public class App extends JFrame implements ActionListener {
 		myPanel.setLayout(new FlowLayout());
 		myPanel.add(openButton);
 		myPanel.add(saveButton);
-		myPanel.add(searchButton);
 		myPanel.add(quitButton);
 		cp.add(myPanel, BorderLayout.PAGE_START);
+		
+		// setup the search functionality
+		JPanel searchPanel = new JPanel();
+		searchPanel.setLayout(new FlowLayout());
+		SearchButton searchButton = new SearchButton(this, med);
+		JTextField searchField = new JTextField(20);
+		JLabel searchLabel = new JLabel("Search For: ");
+		searchPanel.add(searchLabel);
+		searchPanel.add(searchField);
+		searchPanel.add(searchButton);
+		med.registerSearchInput(searchField);
+		
+		// setup the replace functionality
+		JPanel replacePanel = new JPanel();
+		replacePanel.setLayout(new FlowLayout());
+		JButton replaceButton = new JButton("Replace All");
+		JTextField replaceFindField = new JTextField(15);
+		JTextField replaceWithField = new JTextField(15);
+		JLabel replaceLabel = new JLabel("Replace: ");
+		JLabel replaceLabel2 = new JLabel("With: ");
+		replacePanel.add(replaceLabel);
+		replacePanel.add(replaceFindField);
+		replacePanel.add(replaceLabel2);
+		replacePanel.add(replaceWithField);
+		replacePanel.add(replaceButton);
+		med.registerReplace(replaceButton, replaceFindField, replaceWithField);
+		
+		JTabbedPane tabs = new JTabbedPane();
+		tabs.addTab("Search", null, searchPanel, "Should get updated");
+		tabs.addTab("Replace", null, replacePanel, "Should get updated");
+		cp.add(tabs, BorderLayout.PAGE_END);
 	}
 	
 	@Override

@@ -7,56 +7,77 @@ import java.io.IOException;
 
 public class Document {
 	File file;
-	private String content;
+	private String content = "";
+	private final String TEMP_FILENAME = "start.txt";
+	private final String TEMP_FILE = "tmp/" + TEMP_FILENAME;
 	
-	void close() {
-		
+	public Document() {
+		// start with temp text file that can be saved as a new file
+		setFile(new File(TEMP_FILE));
+		try {
+			if (file.exists())
+				save("");	// clear existing file
+			else
+				file.createNewFile();
+			
+		} catch (IOException e) {
+			throw new RuntimeException("Couldn't write file: "+ e);
+		}
+		content = getContentFromDisk();
+	}
+	
+	File getFile() {
+		return file;
+	}
+
+	void setFile(File f) {
+		file = f;
+		content = getContentFromDisk();
+	}
+	
+	String getContent() {
+		return content;
+	}
+	
+	void setContent(String text) {
+		content = text;
 	}
 	
 	boolean hasChanged() {
-		return !content.equals(contents());
+		return !content.equals(getContentFromDisk()) || isNewFile();
 	}
 	
-	void open(File f) {
-		file = f;
-		content = contents();
+	boolean isNewFile() {
+		// if the file name is still the original temp file, it's new
+		return file.getName().equals(TEMP_FILENAME);
 	}
 	
-	void save(String text) throws IOException {
-		if (file == null) throw new RuntimeException("You must first select a file");
-		System.out.println("starting save: "+ text);
-		// update the local cached content
-		content = text;
+	void save(String text) {
+		if (file == null) 
+			throw new RuntimeException("You must first select a file");
 		
 		// only save if changed
 		if (hasChanged()) {
 			try {
 				BufferedWriter bw = new BufferedWriter(new FileWriter(file));
 				bw.write(content);
-				System.out.println("writing file: "+ content);
 				bw.close();
 			} catch (IOException e) {
-				System.out.println("Fucking file didn't save");
+				System.out.println("File didn't save");
 			}
 		} else {
-			System.out.println("File didn't change, not saving");
+			System.out.println("File didn't change, skipping save");
 		}
 	}
 	
-	File getFile() {
-		return file;
-	}
-	
-	// http://www.javapractices.com/topic/TopicAction.do?Id=42
-	String contents() {
-		if (file == null)
-			return "";
+	// credit: http://www.javapractices.com/topic/TopicAction.do?Id=42
+	private String getContentFromDisk() {
+		// if there's no file, return empty string
+		if (file == null) return "";
 		
 		StringBuilder contents = new StringBuilder();
 	    
 	    try {
-	      //use buffering, reading one line at a time
-	      //FileReader always assumes default encoding is OK!
 	      BufferedReader input =  new BufferedReader(new FileReader(file));
 	      try {
 	        String line = null; //not declared within while loop
@@ -80,9 +101,5 @@ public class Document {
 	    }
 	    
 	    return contents.toString();
-	}
-	
-	public String toString() {
-		return contents();
 	}
 }

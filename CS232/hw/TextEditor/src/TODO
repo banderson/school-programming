@@ -1,22 +1,11 @@
-TODO:
- - Allow changes to be saved to disk
- - 
-
-High-level features:
- - Save files
- - Search for text and highlight
- - Search and replace all instances
-
-Implementation Notes:
- - Use a JTextArea to store the contents of the file
- 	- Utilize getCaretPosition(), and other useful functions inherited from this
- 	- Use the append() method to add new text
- 	- Use getText to get text needed for file
- - Above text area, include buttons to: Quit, Save, Open, Search, Replace
- 	- Quit: must ask the user to save [if changes are made]
- 	- Save: ask for a file name to save to
- 	- Search: prompt for search text and direction
- 	- Replace: same as search with another input for text to replace (can only replace forward if that's easier)
-
-Extra Credit:
- - Implement change tracking so user only prompted to save on quitting if the file was actually changed
+TODO: 
+ - Check in changes and tag as V1
+ - Make sure Document.content is treated as simply the file's contents (cached)
+ - Write pseudocode
+ - Consider the Presentation-Model approach
+ 	- App class for setting up view (creating and placing components)
+ 	- DocumentFrame class for interactions with model (syncing content, proxy methods that process events into actions on the document
+ 	- Document as model
+ 	- http://martinfowler.com/eaaDev/PresentationModel.html
+ 	- http://www.javafaq.nu/java-article714.html
+  
