@@ -5,6 +5,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * @author ben
+ * Class: Document
+ * Description: represents a document on the disk, which is compatible with the Editor
+ */
 public class Document {
 	File file;
 	private String content = "";
@@ -18,15 +23,11 @@ public class Document {
 			if (file.exists())
 				save("");	// clear existing file
 			else
-				file.createNewFile();
+				file.createNewFile(); // if it doesn't exist
 			
 		} catch (IOException e) {
 			throw new RuntimeException("Couldn't write file: "+ e);
 		}
-	}
-	
-	File getFile() {
-		return file;
 	}
 
 	void setFile(File f) {

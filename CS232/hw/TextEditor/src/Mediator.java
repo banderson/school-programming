@@ -8,7 +8,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-// mediator pattern: http://en.wikipedia.org/wiki/Mediator_pattern
+/**
+ * @author Ben Anderson
+ * @see http://en.wikipedia.org/wiki/Mediator_pattern
+ * Description: perhaps ill-advised attempt at using the mediator pattern 
+ * 	to simplify communication between the many GUI components
+ */
 public class Mediator {
 	 
 	OpenButton openButton;
@@ -70,7 +75,6 @@ public class Mediator {
     }
  
     void open() {
-    	//TODO If open is pressed when another file is already open, call save on it before opening new file
     	// populate textarea with text
     	JFileChooser fileopen = new JFileChooser();
         int ret = fileopen.showDialog(null, "Open file");

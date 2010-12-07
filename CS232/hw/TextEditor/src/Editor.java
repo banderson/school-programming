@@ -14,6 +14,12 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+/**
+ * 
+ * @author Ben Anderson
+ * Editor: a simple text editor
+ * 
+ */
 public class Editor extends JFrame implements ActionListener {
 
     Mediator med = new Mediator();
