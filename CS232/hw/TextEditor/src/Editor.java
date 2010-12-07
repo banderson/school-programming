@@ -14,16 +14,16 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class App extends JFrame implements ActionListener {
+public class Editor extends JFrame implements ActionListener {
 
     Mediator med = new Mediator();
 
 	public static void main(String[] args) {
-		App me = new App();
+		Editor me = new Editor();
 		me.setVisible(true);
 	}
 	
-	public App() {
+	public Editor() {
 		setSize(800,600);
 		
 		Container cp = getContentPane();

@@ -1,7 +1,7 @@
 TODO: 
- - Check in changes and tag as V1
- - Make sure Document.content is treated as simply the file's contents (cached)
  - Write pseudocode
+ - Save on new file change detection not working
+ - Make sure Document.content is treated as simply the file's contents (cached)
  - Consider the Presentation-Model approach
  	- App class for setting up view (creating and placing components)
  	- DocumentFrame class for interactions with model (syncing content, proxy methods that process events into actions on the document

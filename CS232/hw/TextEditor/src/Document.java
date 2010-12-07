@@ -23,7 +23,6 @@ public class Document {
 		} catch (IOException e) {
 			throw new RuntimeException("Couldn't write file: "+ e);
 		}
-		content = getContentFromDisk();
 	}
 	
 	File getFile() {
@@ -68,38 +67,33 @@ public class Document {
 		} else {
 			System.out.println("File didn't change, skipping save");
 		}
+		// reset "cached" local content
+		content = text;
 	}
 	
-	// credit: http://www.javapractices.com/topic/TopicAction.do?Id=42
+	// read the file contents from disk
 	private String getContentFromDisk() {
 		// if there's no file, return empty string
-		if (file == null) return "";
+		if (file == null || isNewFile()) return "";
 		
-		StringBuilder contents = new StringBuilder();
+		String text = "";
 	    
 	    try {
-	      BufferedReader input =  new BufferedReader(new FileReader(file));
+	      BufferedReader in =  new BufferedReader(new FileReader(file));
 	      try {
-	        String line = null; //not declared within while loop
-	        /*
-	        * readLine is a bit quirky :
-	        * it returns the content of a line MINUS the newline.
-	        * it returns null only for the END of the stream.
-	        * it returns an empty String if two newlines appear in a row.
-	        */
-	        while (( line = input.readLine()) != null){
-	          contents.append(line);
-	          contents.append(System.getProperty("line.separator"));
+	        String line = ""; 
+	        while ((line = in.readLine()) != null){
+	          text += line + "\n"; // readline() doesn't include newline?
 	        }
 	      }
 	      finally {
-	        input.close();
+	        in.close();
 	      }
 	    }
 	    catch (IOException ex){
 	      ex.printStackTrace();
 	    }
 	    
-	    return contents.toString();
+	    return text;
 	}
 }

@@ -113,6 +113,7 @@ public class Mediator {
     	System.exit(0);
     }
     
+    // sync the content cache in the Document class so we can do change tracking
     private void syncContent() {
     	document.setContent(textArea.getText());
     }
